@@ -1,8 +1,24 @@
 import React from 'react'
+import ConnectWalletButton from './shared/ConnectWalletButton'
 
 const Header = (): React.JSX.Element => {
   return (
-    <div>Header</div>
+    <header className='h-[10rem] w-full] bg-slate-400 flex items-center justify-between px-3'>
+
+        <div className='flex items-center justify-center'>
+
+          <span className='text-white text-3xl font-bold'>LOGO</span>
+
+        </div>
+
+        <div className='flex items-center justify-center'>
+
+          <ConnectWalletButton/>
+
+        </div>
+
+
+    </header>
   )
 }
 

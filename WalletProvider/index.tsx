@@ -23,7 +23,7 @@ const myTheme = merge(darkTheme() , {
 
     colors: {
 
-        accentColor: "#badc57"
+        accentColor: "#6AB04A"
 
     }
 
