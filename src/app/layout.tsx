@@ -5,6 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 import WalletProvider from "../../WalletProvider";
+import Header from "@/components/shared/Header";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,6 +22,8 @@ export default function RootLayout({
       <body className={inter.className}>
         
         <WalletProvider>
+
+          <Header/>
 
             {children}
 

@@ -1,9 +1,9 @@
 import React from 'react'
-import ConnectWalletButton from './shared/ConnectWalletButton'
+import ConnectWalletButton from './ConnectWalletButton'
 
 const Header = (): React.JSX.Element => {
   return (
-    <header className='h-[10rem] w-full] bg-slate-400 flex items-center justify-between px-3'>
+    <header className='h-[10rem] w-full] bg-slate-400 flex items-center justify-between px-5'>
 
         <div className='flex items-center justify-center'>
 
