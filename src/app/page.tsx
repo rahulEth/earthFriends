@@ -1,3 +1,4 @@
+import FileUpload from '@/components/ui/Fileupload';
 import Hero from '@/components/ui/Hero'
 import React from 'react'
 
@@ -6,6 +7,8 @@ const page = (): React.JSX.Element => {
     <div>
  
         <Hero/>
+
+        <FileUpload/>
 
     </div>
   )
