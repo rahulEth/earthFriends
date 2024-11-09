@@ -1,7 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.26;
 
-contract EarthAuditor {
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+interface IERC20{
+    function mint(address to, uint256 amount) external;
+    function assignAuditor(address auditor) external;
+    function remokeAuditor(address auditor) external;
+}
+
+contract EarthAuditor is Ownable{
+    // bytes32 public constant ADMIN_ROLE = keccak256("DEFAULT_ADMIN_ROLE"); // Default admin role
+    // bytes32 public constant AUDITOR_ROLE = keccak256("AUDITOR_ROLE");
     event Deposit(address indexed sender, uint256 amount, uint256 balance);
     event SubmitTransaction(
         address indexed owner,
@@ -15,13 +25,13 @@ contract EarthAuditor {
     event RevokeConfirmation(address indexed owner, uint256 indexed txIndex);
     event ExecuteTransaction(address indexed owner, uint256 indexed txIndex);
 
-    address[] public owners;
     mapping(address => bool) public users;
     uint256 public usersCount;
+    IERC20 EFRND_ADDRESS;
     uint256 public approvedTx;
-    uint256 public pendingTx;
-    mapping(address => bool) public isOwner;
+    // mapping(address => bool) public isOwner;
     uint256 public numConfirmationsRequired;
+    mapping(address => bool) public auditors;
 
     struct Transaction {
         address to;
@@ -38,10 +48,10 @@ contract EarthAuditor {
 
     Transaction[] public transactions;
 
-    modifier onlyOwner() {
-        require(isOwner[msg.sender], "not owner");
-        _;
-    }
+    // modifier onlyOwner() {
+    //     require(isOwner[msg.sender], "not owner");
+    //     _;
+    // }
 
     modifier txExists(uint256 _txIndex) {
         require(_txIndex < transactions.length, "tx does not exist");
@@ -57,30 +67,39 @@ contract EarthAuditor {
         require(!isConfirmed[_txIndex][msg.sender], "tx already confirmed");
         _;
     }
+    modifier onlyAuditor(){
+        require(auditors[msg.sender], "only auditor is allowed");
+        _;
+    }
 
-    constructor(address[] memory _owners, uint256 _numConfirmationsRequired) {
-        require(_owners.length > 0, "owners required");
+    constructor(address _auditor, address _token, uint256 _numConfirmationsRequired) Ownable(msg.sender){
         require(
-            _numConfirmationsRequired > 0
-                && _numConfirmationsRequired <= _owners.length,
+            _numConfirmationsRequired > 0,
             "invalid number of required confirmations"
         );
-
-        for (uint256 i = 0; i < _owners.length; i++) {
-            address owner = _owners[i];
-
-            require(owner != address(0), "invalid owner");
-            require(!isOwner[owner], "owner not unique");
-
-            isOwner[owner] = true;
-            owners.push(owner);
-        }
-
+        // _grantRole(DEFAULT_ADMIN_ROLE, msg.sender); // Initializing admin role
         numConfirmationsRequired = _numConfirmationsRequired;
+        EFRND_ADDRESS = IERC20(_token);
+        auditors[_auditor] = true;
     }
 
     receive() external payable {
         emit Deposit(msg.sender, msg.value, address(this).balance);
+    }
+
+    function onboardAuditor(address _auditor) public onlyOwner{
+        auditors[_auditor] = true;
+        // grantRole(AUDITOR_ROLE, _auditor);
+
+        // EFRND_ADDRESS.addAuditor(_auditor);
+        
+    } 
+
+        // Function to remove an auditor
+    function removeAuditor(address auditor) public onlyOwner {
+        // revokeRole(AUDITOR_ROLE, auditor);
+        auditors[msg.sender] = false;
+        EFRND_ADDRESS.remokeAuditor(auditor);
     }
 
     function submitTransaction(address _to, uint256 _value, string memory proofId, string memory activityType)
@@ -102,7 +121,6 @@ contract EarthAuditor {
         if(!users[msg.sender]){
            usersCount++;
         }
-        pendingTx++;
 
         emit SubmitTransaction(msg.sender, txIndex, _to, _value, proofId, activityType);
     }
@@ -123,7 +141,7 @@ contract EarthAuditor {
 
     function executeTransaction(uint256 _txIndex)
         public
-        onlyOwner
+        onlyAuditor
         txExists(_txIndex)
         notExecuted(_txIndex)
     {
@@ -134,12 +152,10 @@ contract EarthAuditor {
         //     "cannot execute tx"
         // );
 
-        transaction.executed = true;
 
-        (bool success,) =
-            transaction.to.call{value: transaction.value}(transaction.data);
-        require(success, "tx failed");
-        pendingTx -=1;
+        // (bool success,) = EFRND_ADDRESS.delegatecall(abi.encodeWithSignature("transfer(uint256)", transaction.value));
+        EFRND_ADDRESS.mint(transaction.to, transaction.value);
+        transaction.executed = true;
         approvedTx +=1; 
         emit ExecuteTransaction(msg.sender, _txIndex);
     }
@@ -160,9 +176,9 @@ contract EarthAuditor {
     //     emit RevokeConfirmation(msg.sender, _txIndex);
     // }
 
-    function getOwners() public view returns (address[] memory) {
-        return owners;
-    }
+    // function getOwners() public view returns (address[] memory) {
+    //     return owners;
+    // }
 
     function getTransactionCount() public view returns (uint256) {
         return transactions.length;
@@ -174,17 +190,16 @@ contract EarthAuditor {
         returns (
             address to,
             uint256 value,
-            bytes memory data,
+            string memory activity,
             bool executed,
-            uint256 numConfirmations
-        )
+            uint256 numConfirmations)
     {
         Transaction memory transaction = transactions[_txIndex];
 
         return (
             transaction.to,
             transaction.value,
-            transaction.data,
+            transaction.activity,
             transaction.executed,
             transaction.numConfirmations
         );
