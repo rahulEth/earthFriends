@@ -28,7 +28,7 @@ const Hero = (): React.JSX.Element => {
 
     // </section>
 
-    <section className='flex items-center justify-center flex-wrap xl:flex-nowrap py-10 gap-12'>
+    <section className='flex items-center justify-center flex-wrap-reverse xl:flex-nowrap py-10 gap-12'>
 
        <div className='flex items-center justify-end text-center xl:text-left px-10'>
 

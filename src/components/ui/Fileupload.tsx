@@ -49,7 +49,7 @@ const FileUploaderTest = (): React.JSX.Element => {
 
   return (
 
-    <div className="flex items-center justify-center flex-col mb-5">
+    <div className="flex items-center justify-center flex-col mb-5 w-auto">
 
     <FileUploader
       value={files}

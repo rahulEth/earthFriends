@@ -301,7 +301,7 @@ export const  FileUploaderItem = forwardRef<
       )}
       {...props}
     >
-      <div className="font-xl leading-none tracking-tight flex items-center h-full w-full">
+      <div className="font-xl leading-none tracking-tight flex items-center max-h-full max-w-full">
         {children}
       </div>
       <button
