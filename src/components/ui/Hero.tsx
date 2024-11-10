@@ -30,6 +30,12 @@ const Hero = (): React.JSX.Element => {
 
     <section className='flex items-center justify-center flex-wrap xl:flex-nowrap py-10 gap-12'>
 
+       <div className='flex items-center justify-end text-center xl:text-left px-10'>
+
+              <span className='text-2xl md:text-4xl md:flex items-center justify-end '>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellat at excepturi ab suscipit, beatae corrupti amet illo, rerum incidunt odit nostrum odio alias minus eaque dolorum consequuntur aspernatur? Aspernatur modi minima dolor.</span>
+
+          </div>
+
           <div className='flex items-center justify-center py-10 px-10 md:w-1/3 md:h-1/3'>
 
               <Image
@@ -41,11 +47,7 @@ const Hero = (): React.JSX.Element => {
               />
 
           </div>
-          <div className='flex items-center justify-end text-center xl:text-right px-10'>
-
-              <span className='text-2xl md:text-4xl md:flex items-center justify-end '>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellat at excepturi ab suscipit, beatae corrupti amet illo, rerum incidunt odit nostrum odio alias minus eaque dolorum consequuntur aspernatur? Aspernatur modi minima dolor.</span>
-
-          </div>
+         
 
 
     </section>
