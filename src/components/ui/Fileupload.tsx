@@ -8,6 +8,7 @@ import {
   FileInput,
 } from "@/components/ui/extension/file-upload";
 import { Paperclip } from "lucide-react";
+import Dropdown from "./Dropdown";
 
 const FileSvgDraw = (): React.JSX.Element => {
   return (
@@ -55,14 +56,16 @@ const FileUploaderTest = (): React.JSX.Element => {
       value={files}
       onValueChange={setFiles}
       dropzoneOptions={dropZoneConfig}
-      className="relative h-[40rem] w-[80rem] rounded-lg p-2"
+      className="relative h-[40rem]  rounded-lg p-2"
     >
       <FileInput className="outline-dashed outline-1 outline-white">
         <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full ">
           <FileSvgDraw />
         </div>
       </FileInput>
-      <FileUploaderContent>
+
+      {
+        files &&(<FileUploaderContent>
         {files &&
           files.length > 0 &&
           files.map((file, i) => (
@@ -71,14 +74,20 @@ const FileUploaderTest = (): React.JSX.Element => {
               <span className="text-2xl">{file.name}</span>
             </FileUploaderItem>
           ))}
-      </FileUploaderContent>
+      </FileUploaderContent>)
+
+      }
+      
+      
     </FileUploader>
 
         {
           files && 
           files?.length > 0 && 
 
-            (<div className="flex items-center justify-center">
+            (<div className="flex items-center justify-center flex-row flex-wrap gap-5 pb-10 mb-10">
+
+                <Dropdown/>
 
                   <button className="flex items-center justify-center text-white text-xl bg-green-500 border border-white rounded-xl h-[3rem] w-[14rem] cursor-pointer">Upload Files</button>
 

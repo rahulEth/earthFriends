@@ -261,24 +261,33 @@ export const FileUploaderContent = forwardRef<
   const { orientation } = useFileUpload();
   const containerRef = useRef<HTMLDivElement>(null);
 
+
   return (
-    <div
-      className={cn("w-full px-1")}
-      ref={containerRef}
-      aria-description="content file holder"
-    >
+
+    <>
+    
       <div
-        {...props}
-        ref={ref}
-        className={cn(
-          "flex rounded-xl gap-1",
-          orientation === "horizontal" ? "flex-raw flex-wrap" : "flex-col",
-          className,
-        )}
+        className={cn("w-full px-1")}
+        ref={containerRef}
+        aria-description="content file holder"
       >
-        {children}
+        <div
+          {...props}
+          ref={ref}
+          className={cn(
+            "flex rounded-xl gap-1",
+            orientation === "horizontal" ? "flex-raw flex-wrap" : "flex-col",
+            className,
+          )}
+        >
+          {children}
+        </div>
       </div>
-    </div>
+
+
+    </>
+
+    
   );
 });
 
@@ -301,7 +310,7 @@ export const  FileUploaderItem = forwardRef<
       )}
       {...props}
     >
-      <div className="font-xl leading-none tracking-tight flex items-center max-h-full max-w-full">
+      <div className="font-xl leading-none tracking-tight flex items-center max-h-auto max-w-auto">
         {children}
       </div>
       <button
@@ -337,7 +346,7 @@ export const FileInput = forwardRef<
     >
       <div
         className={cn(
-          `w-full rounded-lg duration-300 ease-in-out
+          `max-w-auto rounded-lg duration-300 ease-in-out
          ${
            dropzoneState.isDragAccept
              ? "border-green-500"
