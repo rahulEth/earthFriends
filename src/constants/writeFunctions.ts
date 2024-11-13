@@ -4,13 +4,12 @@ import getContract from "../../Utilities/getContract";
 
 import { toast } from "react-hot-toast";
 
+export const successNotification = (msg: string) => toast.success(msg , {duration: 3000});
 
-const successNotification = (msg: string) => toast.success(msg , {duration: 3000});
-
-const errorNotification = (msg: string) => toast.error(msg , {duration: 3000});
+export const errorNotification = (msg: string) => toast.error(msg , {duration: 3000});
 
 
-export const uploadData = async(address: string , value: number , ipfsHash: string , activityType: string) => {
+export const uploadDataToSmartContract = async(address: string , value: number , ipfsHash: string , activityType: string) => {
 
     try {
 
@@ -37,3 +36,4 @@ export const uploadData = async(address: string , value: number , ipfsHash: stri
     }
 
 }
+
