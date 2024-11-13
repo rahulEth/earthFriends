@@ -13,7 +13,7 @@ import {
 } from "@tanstack/react-query";
 import React from 'react';
 
-import wagmiConfig from '../Utilities/WagmiConfig';
+import wagmiConfig from '../Utils/WagmiConfig';
 
 import merge from "lodash.merge";
 
