@@ -1,7 +1,7 @@
 import { connectorsForWallets } from "@rainbow-me/rainbowkit";
 
 import { rainbowWallet , walletConnectWallet , metaMaskWallet , coinbaseWallet , injectedWallet } from "@rainbow-me/rainbowkit/wallets";
-import { holesky, mainnet } from "viem/chains";
+import { holesky, mainnet , taikoHekla } from "viem/chains";
 
 import { createConfig, http } from "wagmi";
 
@@ -47,13 +47,13 @@ const connectors = connectorsForWallets(
 
 const wagmiConfig = createConfig({
 
-    chains:[holesky],
+    chains:[taikoHekla],
     connectors: [...connectors],
     multiInjectedProviderDiscovery: true,
     transports: {
 
         [mainnet.id]: http(),
-        [holesky.id]: http(),
+        [taikoHekla.id]: http(),
 
     },
     ssr: true,

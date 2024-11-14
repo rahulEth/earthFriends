@@ -11,9 +11,14 @@ import { Paperclip } from "lucide-react";
 import Dropdown from "./Dropdown";
 import { PDFDocument } from "pdf-lib";
 
+import { useAccount } from "wagmi";
+
 import { saveAs } from "file-saver";
 
 import html2canvas from "html2canvas";
+import { uploadFileToIpfs } from "../../../Utilities/uploadFileToIpfs";
+import { errorNotification, successNotification, uploadDataToSmartContract } from "@/constants/writeFunctions";
+import { ethers } from "ethers";
 
 const FileSvgDraw = (): React.JSX.Element => {
   return (
@@ -46,6 +51,48 @@ const FileSvgDraw = (): React.JSX.Element => {
 
 const FileUploaderTest = (): React.JSX.Element => {
   const [files, setFiles] = useState<File[] | null>(null);
+
+  // const [blobData , setBlobData] = useState<Blob>();
+
+  const {address} = useAccount();
+
+
+  const uploadFiles = async() => {
+
+      const blob = await generatePdf(files!);
+
+      console.log("The generated blob is" , blob);
+
+      const ipfsHash = await uploadFileToIpfs(blob!);
+
+      console.log(`the content id of the upload file is ${ipfsHash}`);
+
+      console.log(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
+
+      const receipt = await uploadDataToSmartContract(address! , ethers.parseUnits("0.000002") , String(ipfsHash) , "Testing");
+
+      console.log("The transaction receipt is " , receipt);
+
+      if(receipt!){
+
+        successNotification("File have been successfully uploaded");
+
+      }else{
+
+        errorNotification("Couldnt upload the file");
+
+      }
+
+    try {
+      
+    } catch (error) {
+
+      console.log(error);
+      
+    }
+
+  }
+
 
   const dropZoneConfig = {
     maxFiles: 3,
@@ -120,8 +167,15 @@ const FileUploaderTest = (): React.JSX.Element => {
       console.log(pdfBytes);
 
 
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      console.log(blob);
+      const blob: Blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+      return blob;
+
+      // setBlobData(blob);
+
+      // console.log(blob);
+
+      // console.log(blobData);
       // saveAs(blob, 'images.pdf');
     } catch (error) {
 
@@ -170,9 +224,11 @@ const FileUploaderTest = (): React.JSX.Element => {
       }, 'image/png');
     });
   };
-  useEffect(() => {
-    files && generatePdf(files!);
-  }, [files]);
+
+
+  // useEffect(() => {
+  //   files && generatePdf(files!);
+  // }, [files]);
 
   return (
     <div className="flex items-center justify-center flex-col mb-5 w-auto">
@@ -210,7 +266,12 @@ const FileUploaderTest = (): React.JSX.Element => {
         <div className="flex items-center justify-center flex-row flex-wrap gap-5 pb-10 mb-10">
           <Dropdown />
 
-          <button className="flex items-center justify-center text-white text-xl bg-green-500 border border-white rounded-xl h-[3rem] w-[14rem] cursor-pointer">
+          <button 
+          className="flex items-center justify-center text-white text-xl bg-green-500 border border-white rounded-xl h-[3rem] w-[14rem] cursor-pointer"
+          onClick={uploadFiles}
+          
+          >
+          
             Upload Files
           </button>
         </div>

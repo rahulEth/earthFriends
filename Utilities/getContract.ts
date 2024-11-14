@@ -12,7 +12,7 @@ const getContract = async() => {
 
         const signer = await provider?.getSigner();
 
-        const contract = new ethers.Contract(CONTRACT_ADDRESS , ABI , signer );
+        const contract = new ethers.Contract(CONTRACT_ADDRESS , ABI , signer);
 
         console.log(contract);
 

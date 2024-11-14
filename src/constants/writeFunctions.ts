@@ -1,4 +1,4 @@
-import {ethers} from "ethers";
+
 
 import getContract from "../../Utilities/getContract";
 
@@ -6,22 +6,37 @@ import { toast } from "react-hot-toast";
 
 export const successNotification = (msg: string) => toast.success(msg , {duration: 3000});
 
+
 export const errorNotification = (msg: string) => toast.error(msg , {duration: 3000});
 
 
-export const uploadDataToSmartContract = async(address: string , value: number , ipfsHash: string , activityType: string) => {
+
+export const uploadDataToSmartContract = async(address: `0x${string}` , value: BigInt , ipfsHash: string , activityType: string) => {
+
 
     try {
 
         const contract = await getContract();
 
-        const transaction = await contract?.submitTransaction(address , value , ipfsHash , activityType);
+        console.log("The generated contract is " , contract);
+
+        // const estimatedGas = await contract?.estimateGas.submitTransaction(address , value , ipfsHash , activityType);
+
+        // const transaction = await contract?.submitTransaction(address , value , ipfsHash , activityType);
+
+        const transaction = await contract?.submitTransaction(address , value , ipfsHash , activityType , {
+
+            gasLimit: "1000000",
+
+        });
 
         if(transaction){
 
             console.log(transaction);
 
             successNotification("Transaction has been submitted successfully");
+
+            return transaction.hash
 
         }else{
 

@@ -1,12 +1,18 @@
 import { errorNotification } from "@/constants/writeFunctions";
 import axios from "axios";
 
+import {configDotenv} from "dotenv";
 
+configDotenv();
 
-export const uploadFileToIpfs = async(files: File[]) => {
+export const uploadFileToIpfs = async(blob: Blob) => {
 
-    const pinataApiKey: string =  "777625b270a9ebc7e03c"
-    const pinataSecretApiKey: string =  "5ff40a6c3ee443748143eb4c0be12368c1342c675663e8648006ab88081c9c22"
+    const pinataApiKey: string = process.env.NEXT_PUBLIC_PINATA_API_KEY as string;
+    const pinataSecretApiKey: string =  process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY as string;
+
+    const formData = new FormData();
+
+    formData.append('file' , blob , "uploaded-file.pdf");
 
     try {
 
@@ -14,16 +20,17 @@ export const uploadFileToIpfs = async(files: File[]) => {
 
             'pinata_api_key': pinataApiKey,
             'pinata_secret_api_key': pinataSecretApiKey,
+            "Content-Type": "multipart/form-data"
 
         }
         
-        const response = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS" , files , {headers});
+        const response = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS" , formData , {headers});
 
-        console.log(response.data);
+        console.log(response);
 
         if(response.status === 200){
 
-            return response.data;
+            return response?.data?.IpfsHash;
 
         }else{
 
