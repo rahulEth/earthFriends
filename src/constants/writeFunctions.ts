@@ -18,8 +18,6 @@ export const uploadDataToSmartContract = async(address: `0x${string}` , value: B
 
         const contract = await getContract();
 
-        console.log("The generated contract is " , contract);
-
         // const estimatedGas = await contract?.estimateGas.submitTransaction(address , value , ipfsHash , activityType);
 
         // const transaction = await contract?.submitTransaction(address , value , ipfsHash , activityType);
@@ -32,7 +30,7 @@ export const uploadDataToSmartContract = async(address: `0x${string}` , value: B
 
         if(transaction){
 
-            console.log(transaction);
+            console.log("transaction submitted: ", transaction);
 
             successNotification("Transaction has been submitted successfully");
 

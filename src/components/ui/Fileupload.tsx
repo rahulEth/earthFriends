@@ -65,9 +65,9 @@ const FileUploaderTest = (): React.JSX.Element => {
 
       const ipfsHash = await uploadFileToIpfs(blob!);
 
-      console.log(`the content id of the upload file is ${ipfsHash}`);
+      // console.log(`the content id of the upload file is ${ipfsHash}`);
 
-      console.log(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
+      console.log("pinata Path: ", `https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
 
       const receipt = await uploadDataToSmartContract(address! , ethers.parseUnits("0.000002") , String(ipfsHash) , "Testing");
 
