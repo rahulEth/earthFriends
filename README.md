@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![Logo](docs/earthFriends.svg)
 
-## Getting Started
 
-First, run the development server:
+# About
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Eco-friendly practices fosters a cleaner, more sustainable environment. By prioritizing recycling, responsible waste management, renewable energy, and natural farming methods, we can significantly reduce pollution and build a greener future.
+
+## Getting Started on local 
+
+To run daap locally, you will need
+
+- Node.js (v18 or above)
+- Chrome Browser Or Chromium based browser
+- Metamask Extension on Chrome Browser (Chromium based browser)
+
+# back-end
+
+1. clone this repo
+
+```
+git clone https://github.com/rahulEth/earthfriends.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2.  go to api folder
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+cd api
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. copy .env.example to .env 
 
-## Learn More
+4. setup all the environment variables including moralis ipfs key, app-wallet private key
+& wallet address, mongodb url.
 
-To learn more about Next.js, take a look at the following resources:
+5. 
+```
+npm install
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+npm run start
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
+server would start on localhost:3000
 
-## Deploy on Vercel
+# front-end
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. go into frontend folder
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+cd frontend
+
+copy .env.example to .env 
+
+npm install
+
+npm run build
+
+npm run dev
+
+```
+Open [http://localhost:5173](http://localhost:5173) with your browser to see the result.
+
+
+Ta-da You are good to go and explore earthFriends dAapp!
+
+![top](./docs/dashboard.webp)
+
+
+![top](./docs/mydocs.webp)
+
+
+![top](./docs/receive-docs.webp)
+
+
+## Description
+
+At earthFrineds we insetivise users for doing any eco-friendy activity weather it is planting a new tree, adopting eco-friendly aggriculture methods, doing waste managment, using eco-friendly products, running environemnt awareness campaign. Any one can earn $EFRND token just doing good things for betterment of the world. 
