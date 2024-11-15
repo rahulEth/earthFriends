@@ -359,7 +359,11 @@ const DataTableWithModals = () => {
       </Dialog>
 
       {/* Transaction Modal */}
-      <Dialog open={txOpen} onClose={() => setTxOpen(false)}>
+      <Dialog
+        style={{ zIndex: 9999999999999999 }}
+        open={txOpen}
+        onClose={() => setTxOpen(false)}
+      >
         <DialogTitle>Transaction Approval</DialogTitle>
         <DialogContent>
           <Typography>
