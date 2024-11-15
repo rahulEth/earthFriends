@@ -44,7 +44,7 @@ function TransactionChart() {
   };
 
   return (
-    <div className="p-4 bg-[#f2ffe5] rounded-lg shadow-md max-w-[1190px] mx-auto">
+    <div className="p-8 bg-[#f2ffe5] rounded-lg shadow-md max-w-[1130px] mx-auto">
       <Line
         className="max-w-[1000px] min-h-[500px] h-full w-full mx-auto"
         data={data}

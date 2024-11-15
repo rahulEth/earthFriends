@@ -18,7 +18,7 @@ function Statistics() {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-[1190px] py-8 mx-auto">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-[1190px] px-8 py-8 mx-auto">
       {stats.map((stat, index) => (
         <div
           key={index}
