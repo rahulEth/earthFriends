@@ -167,6 +167,30 @@ app.get("/api/getTransactionsByUser", async (req, res) => {
 });
 
 
+app.get("/api/getAllTransaction", async (req, res) => {
+  // console.log("req.query.appLink ------ ", req.query.appLink, req.query.address)
+  // const db = await connectToDatabase();
+  const collection = db.collection("earthfriends-collection");
+  try {
+      const result = await collection.find().sort({["date"]: -1});
+      if (result) {
+          const finalResult = await result.toArray();
+          JSON.stringify(finalResult, null, 2);
+          return res.status(200).send(finalResult);
+      }
+      return res.status(404).send({ status: false, error: {message: "no matching transactions found" }});
+  } catch (err) {
+      return res.status(500).send({
+          success: false,
+          error : {
+              message: 'internal server error',
+              details: err.message
+          }    
+      });
+  }
+});
+
+
 // Start the server and listen on the specified port
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
