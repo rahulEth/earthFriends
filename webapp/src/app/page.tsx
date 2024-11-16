@@ -15,13 +15,13 @@ const page = (): React.JSX.Element => {
 
   const {address} = useAccount();
 
-  const {test} = UseStateManagement();
+  // const {test} = UseStateManagement();
 
   useEffect(() => {
 
     address && getContract();
 
-    console.log(test);
+    // console.log(test);
 
   })
 
