@@ -58,26 +58,24 @@ const FileUploaderTest = (): React.JSX.Element => {
 
 
   const uploadFiles = async() => {
-
+      const activityType = 'environment-campaign'
+      /*
+      garbage-cleaning
+      eco-product
+      eco-farming
+      re-forestration
+      eco-transport
+      */
       const blob = await generatePdf(files!);
-
-      console.log("The generated blob is" , blob);
 
       const ipfsHash = await uploadFileToIpfs(blob!);
 
-      console.log(`the content id of the upload file is ${ipfsHash}`);
+      console.log('ipfs hash', `https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
 
-      console.log(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
 
-      console.log(address);
+      const token_amount = 5000;
 
-      console.log(String(ipfsHash));
-
-      const value = ethers.parseEther("0.0000000002");
-
-      console.log(value);
-
-      const receipt = await uploadDataToSmartContract(address! , Number(ethers.parseEther("0.0000000002")) , String(ipfsHash) , "Testing");
+      const receipt = await uploadDataToSmartContract(address! , token_amount , String(ipfsHash) , activityType);
       
       console.log("The transaction receipt is " , receipt);
 
