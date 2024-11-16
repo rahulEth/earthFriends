@@ -63,6 +63,7 @@ const FileUploaderTest = (): React.JSX.Element => {
   const { address } = useAccount();
 
 
+<<<<<<< HEAD:webapp/src/components/ui/Fileupload.tsx
   const uploadFiles = async () => {
 
     setLoading(true);
@@ -76,16 +77,37 @@ const FileUploaderTest = (): React.JSX.Element => {
       const ipfsHash = await uploadFileToIpfs(blob!);
 
       // console.log(`the content id of the upload file is ${ipfsHash}`);
+=======
+  const uploadFiles = async() => {
+      const activityType = 'environment-campaign'
+      /*
+      garbage-cleaning
+      eco-product
+      eco-farming
+      re-forestration
+      eco-transport
+      */
+      const blob = await generatePdf(files!);
 
-      console.log(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
+      const ipfsHash = await uploadFileToIpfs(blob!);
 
-      console.log(address);
+      console.log('ipfs hash', `https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
+>>>>>>> db98ae8d1dd987dce888d5137cc466f1473f00e7:reactApp/webapp/src/components/ui/Fileupload.tsx
 
+
+      const token_amount = 5000;
+
+<<<<<<< HEAD:webapp/src/components/ui/Fileupload.tsx
       console.log(String(ipfsHash));
 
       console.log(value);
 
       console.log(selectedItem);
+=======
+      const receipt = await uploadDataToSmartContract(address! , token_amount , String(ipfsHash) , activityType);
+      
+      console.log("The transaction receipt is " , receipt);
+>>>>>>> db98ae8d1dd987dce888d5137cc466f1473f00e7:reactApp/webapp/src/components/ui/Fileupload.tsx
 
       // const receipt = await uploadDataToSmartContract(address! , Number(ethers.parseEther("0.0000000002")) , String(ipfsHash) , `${selectedItem}`);
       const receipt = await uploadDataToSmartContract(address!, Number(value), String(ipfsHash), `${selectedItem}`);
