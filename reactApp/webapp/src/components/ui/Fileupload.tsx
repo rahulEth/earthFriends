@@ -17,7 +17,12 @@ import { useAccount } from "wagmi";
 
 import html2canvas from "html2canvas";
 import { uploadFileToIpfs } from "../../../Utilities/uploadFileToIpfs";
-import { errorNotification, submitTransaction, successNotification, uploadDataToSmartContract } from "@/constants/writeFunctions";
+import {
+  errorNotification,
+  submitTransaction,
+  successNotification,
+  uploadDataToSmartContract,
+} from "@/constants/writeFunctions";
 import { ethers } from "ethers";
 
 import { readEventSubmitTransaction } from "@/constants/readFunctions";
@@ -58,14 +63,22 @@ const FileSvgDraw = (): React.JSX.Element => {
 const FileUploaderTest = (): React.JSX.Element => {
   const [files, setFiles] = useState<File[] | null>(null);
 
-  const [filename , setFileName] = useState<string>("");
+  const [filename, setFileName] = useState<string>("");
 
-  const [transactionurl , setTransactionUrl] = useState<string>("");
+  const [transactionurl, setTransactionUrl] = useState<string>("");
 
-  const [ipfspath , setIpfsPath] = useState<string>("");
+  const [ipfspath, setIpfsPath] = useState<string>("");
 
   // const { selectedItem, tokenAmount, loading, setLoading, txIndexId , setTxIndexId , fileName, setFileName , trasanctionUrl , setTransactionUrl , ipfsPath , setIpfsPath } = UseStateManagement();
-  const { selectedItem, tokenAmount, loading, setLoading, txIndexId , setTxIndexId, setTransactionData } = UseStateManagement();
+  const {
+    selectedItem,
+    tokenAmount,
+    loading,
+    setLoading,
+    txIndexId,
+    setTxIndexId,
+    setTransactionData,
+  } = UseStateManagement();
 
   // const [blobData , setBlobData] = useState<Blob>();
 
@@ -75,13 +88,10 @@ const FileUploaderTest = (): React.JSX.Element => {
   let ipfsPath: string;
   let transactionUrl: string;
 
-
   const uploadFiles = async () => {
-
     setLoading(true);
 
     try {
-
       const blob = await generatePdf(files!);
 
       console.log("The generated blob is", blob);
@@ -92,11 +102,9 @@ const FileUploaderTest = (): React.JSX.Element => {
 
       // console.log('ipfs hash', `https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
 
+      ipfsPath = `https://gateway.pinata.cloud/ipfs/${ipfsHash}`;
+      setIpfsPath(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
 
-      ipfsPath = `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
-      setIpfsPath(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`)
-
-      
       fileName = ipfsDetails?.fileName!;
       setFileName(ipfsDetails?.fileName!);
       // console.log(ipfsDetails?.fileName!);
@@ -107,13 +115,17 @@ const FileUploaderTest = (): React.JSX.Element => {
 
       console.log(selectedItem);
 
-
       // const receipt = await uploadDataToSmartContract(address! , Number(ethers.parseEther("0.0000000002")) , String(ipfsHash) , `${selectedItem}`);
-      const receipt = await uploadDataToSmartContract(address!, Number(tokenAmount), String(ipfsHash), `${selectedItem}`);
+      const receipt = await uploadDataToSmartContract(
+        address!,
+        Number(tokenAmount),
+        String(ipfsHash),
+        `${selectedItem}`
+      );
 
       console.log("The transaction receipt is ", receipt);
 
-       transactionUrl = `https://hekla.taikoscan.io/tx/${receipt}`;
+      transactionUrl = `https://hekla.taikoscan.io/tx/${receipt}`;
       setTransactionUrl(`https://hekla.taikoscan.io/tx/${receipt}`);
 
       setFiles(null);
@@ -121,31 +133,28 @@ const FileUploaderTest = (): React.JSX.Element => {
       setLoading(false);
 
       if (receipt!) {
+        const resp = await submitTransaction(
+          address!,
+          fileName,
+          ipfsPath,
+          selectedItem,
+          transactionUrl,
+          tokenAmount,
+          txIndexId
+        );
 
-        const resp = await submitTransaction(address!, fileName, ipfsPath, selectedItem, transactionUrl, tokenAmount, txIndexId );
-
-        console.log("Response getting from submit transaction" , resp);
+        console.log("Response getting from submit transaction", resp);
 
         setTransactionData(resp);
 
         successNotification("Transaction Completed Successfully");
-
       } else {
-
         errorNotification("Couldnt upload the file");
-
       }
-
-
-
     } catch (error) {
-
       console.log(error);
-
     }
-
-  }
-
+  };
 
   const dropZoneConfig = {
     maxFiles: 3,
@@ -156,12 +165,11 @@ const FileUploaderTest = (): React.JSX.Element => {
   const generatePdf = async (images: File[]) => {
     try {
       if (images.length === 0) {
-        alert('Please upload at least one image');
+        alert("Please upload at least one image");
         return;
       }
 
       const pdfDoc = await PDFDocument.create();
-
 
       for (const image of images) {
         const imageBytes = await readFileAsArrayBuffer(image);
@@ -169,42 +177,39 @@ const FileUploaderTest = (): React.JSX.Element => {
         let imageEmbed;
         try {
           // Check the image file type and embed accordingly
-          const isJpg = image.type === 'image/jpeg';
-          const isPng = image.type === 'image/png';
-          const isGif = image.type === 'image/gif';
-          const isBmp = image.type === 'image/bmp';
+          const isJpg = image.type === "image/jpeg";
+          const isPng = image.type === "image/png";
+          const isGif = image.type === "image/gif";
+          const isBmp = image.type === "image/bmp";
 
           if (isJpg) {
-            imageEmbed = await pdfDoc.embedJpg(imageBytes);  // Embed as JPG
+            imageEmbed = await pdfDoc.embedJpg(imageBytes); // Embed as JPG
           } else if (isPng) {
-            imageEmbed = await pdfDoc.embedPng(imageBytes);  // Embed as PNG
+            imageEmbed = await pdfDoc.embedPng(imageBytes); // Embed as PNG
           } else if (isGif || isBmp) {
             // For unsupported types, convert to PNG using html2canvas
             const imageUrl = URL.createObjectURL(image);
             const canvas = await convertImageToCanvas(imageUrl);
             const pngImageBytes = await canvasToPngArrayBuffer(canvas);
-            imageEmbed = await pdfDoc.embedPng(pngImageBytes);  // Embed as PNG
+            imageEmbed = await pdfDoc.embedPng(pngImageBytes); // Embed as PNG
           } else {
-            throw new Error('Unsupported image format');
+            throw new Error("Unsupported image format");
           }
         } catch (error) {
-          console.error('Error embedding image:', error);
-          alert('Error processing one of the images. Please check the format.');
+          console.error("Error embedding image:", error);
+          alert("Error processing one of the images. Please check the format.");
           return;
         }
 
         const page = pdfDoc.addPage();
         const { width, height } = page.getSize();
 
-
         const scaleFactor = 0.8;
         const imageWidth = width * scaleFactor;
         const imageHeight = (imageEmbed.height / imageEmbed.width) * imageWidth;
 
-
         const x = (width - imageWidth) / 2;
         const y = (height - imageHeight) / 2;
-
 
         page.drawImage(imageEmbed, {
           x,
@@ -212,15 +217,13 @@ const FileUploaderTest = (): React.JSX.Element => {
           width: imageWidth,
           height: imageHeight,
         });
-
       }
 
       const pdfBytes = await pdfDoc.save();
 
       console.log(pdfBytes);
 
-
-      const blob: Blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob: Blob = new Blob([pdfBytes], { type: "application/pdf" });
 
       return blob;
 
@@ -231,12 +234,9 @@ const FileUploaderTest = (): React.JSX.Element => {
       // console.log(blobData);
       // saveAs(blob, 'images.pdf');
     } catch (error) {
-
       console.log(error);
-
     }
-
-  }
+  };
 
   // Utility function to read the image file as an ArrayBuffer
   const readFileAsArrayBuffer = (file: File): Promise<ArrayBuffer> => {
@@ -249,7 +249,9 @@ const FileUploaderTest = (): React.JSX.Element => {
   };
 
   // Convert an image to a canvas using html2canvas
-  const convertImageToCanvas = (imageUrl: string): Promise<HTMLCanvasElement> => {
+  const convertImageToCanvas = (
+    imageUrl: string
+  ): Promise<HTMLCanvasElement> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.src = imageUrl;
@@ -263,7 +265,9 @@ const FileUploaderTest = (): React.JSX.Element => {
   };
 
   // Convert a canvas to PNG ArrayBuffer
-  const canvasToPngArrayBuffer = (canvas: HTMLCanvasElement): Promise<ArrayBuffer> => {
+  const canvasToPngArrayBuffer = (
+    canvas: HTMLCanvasElement
+  ): Promise<ArrayBuffer> => {
     return new Promise((resolve, reject) => {
       canvas.toBlob((blob) => {
         if (blob) {
@@ -272,42 +276,32 @@ const FileUploaderTest = (): React.JSX.Element => {
           reader.onerror = reject;
           reader.readAsArrayBuffer(blob);
         } else {
-          reject(new Error('Failed to convert canvas to PNG'));
+          reject(new Error("Failed to convert canvas to PNG"));
         }
-      }, 'image/png');
+      }, "image/png");
     });
   };
 
-
   useEffect(() => {
-
-    const readData = async() => {
-
+    const readData = async () => {
       const id = await readEventSubmitTransaction();
 
       console.log(id);
 
       setTxIndexId(id);
+    };
 
-
-    }
-
-    address && readData()
-
-
-  }, [address])
+    address && readData();
+  }, [address]);
 
   return (
-
     <>
-
-    {
-
-      loading && <Loader/>
-
-    }
+      {loading && <Loader />}
 
       <div className="flex items-center justify-center flex-col mb-5 w-auto">
+        <span className="flex items-center justify-center text-[20px]">
+          Uploard Your Proof Of Activity
+        </span>
         <FileUploader
           value={files}
           onValueChange={setFiles}
@@ -319,15 +313,12 @@ const FileUploaderTest = (): React.JSX.Element => {
               <FileSvgDraw />
             </div>
           </FileInput>
-          <span className='flex items-center justify-center'>
-            Uploard Your Proof Of Activity  
-          </span>
+
           {files && (
             <FileUploaderContent>
               {files &&
                 files.length > 0 &&
                 files.map((file, i) => (
-
                   <FileUploaderItem key={i} index={i}>
                     <Paperclip
                       height={50}
@@ -336,8 +327,7 @@ const FileUploaderTest = (): React.JSX.Element => {
                     />
                     <span className="text-2xl">{file.name}</span>
                   </FileUploaderItem>
-                  
-                  ))}
+                ))}
             </FileUploaderContent>
           )}
         </FileUploader>
@@ -350,17 +340,13 @@ const FileUploaderTest = (): React.JSX.Element => {
               className="flex items-center justify-center text-white text-xl bg-green-500 border border-white rounded-xl h-[3rem] w-[14rem] cursor-pointer"
               onClick={uploadFiles}
               disabled={!selectedItem}
-
             >
-
               Upload Files
             </button>
           </div>
         )}
       </div>
     </>
-
-
   );
 };
 
