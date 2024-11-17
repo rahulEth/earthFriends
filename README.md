@@ -5,7 +5,7 @@
 
 ## Overview
 
-Overview At EarthFriends, we reward users for eco-friendly actions like planting trees, adopting sustainable practices, eco-friendly products, managing waste, or raising environmental awareness. Users simply upload proof of their activity, and after successful verification by Environment Auditors, they earn $EFRND tokens directly in their wallet on Taiko Chain.
+This Solution Build on [Taiko Blockchain](https://taiko.xyz). At EarthFriends, we reward users for eco-friendly actions like planting trees, adopting sustainable practices, eco-friendly products, managing waste, or raising environmental awareness. Users simply upload proof of their activity, and after successful verification by Environment Auditors, they earn $EFRND tokens directly in their wallet that supports [Taiko Blockchain](https://taiko.xyz).
 
 ## Problem Solved
 
@@ -14,12 +14,12 @@ Environmental conservation often struggles with a lack of tangible incentives, d
 ## Solution
 
 EarthFriends bridges this gap by creating a rewards-based system that incentivizes users to contribute to a greener planet through verified, tokenized recognition. 
-We are utilizing [https://taiko.xyz/](Taiko) blockchain for this solution as it promot sustainability and carbon nutrility. We have deployed Auditor and ERC20 Token contract on Taiko chain.
+We are utilizing [Taiko Blockchain](https://taiko.xyz) for this solution as it promot sustainability and carbon nutrility. We have deployed Auditor and ERC20 Token contract on [Taiko Blockchain](https://taiko.xyz).
 If User do any activity like waste managment, planting tree, awareness campaign etc, he just simply upload the photos of the activity as proof and create an token transaction. On the Other side admin will review and verify the activity and approve the token transaction and mint the $EFRND token to user's wallet.
 
 ## Architecture
 
-![top](./docs/earth-friends-architecture.png)
+![top](./docs/earth-friends-architecture.drawio.png)
 
 ## Getting Started on local 
 
@@ -95,10 +95,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Ta-da You are good to go and explore earthFriends Admin Portal!
 
-
+# Landing Page
 ![top](./docs/user-dashboard.png)
 
 
+# Admin Dashboard
 ![top](./docs/admin-dashboard.png)
 
 
