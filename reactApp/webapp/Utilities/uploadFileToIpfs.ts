@@ -5,14 +5,16 @@ import {configDotenv} from "dotenv";
 
 configDotenv();
 
-export const uploadFileToIpfs = async(blob: Blob) => {
+export const uploadFileToIpfs = async(blob: Blob, userAddress: `0x${string}`) => {
 
     const pinataApiKey: string = process.env.NEXT_PUBLIC_PINATA_API_KEY as string;
     const pinataSecretApiKey: string =  process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY as string;
 
     const formData = new FormData();
 
-    formData.append('file' , blob , "uploaded-file.pdf");
+    let fileName = `${userAddress}-uploaded-file.pdf`
+
+    formData.append('file' , blob , fileName);
 
     try {
 
@@ -30,7 +32,13 @@ export const uploadFileToIpfs = async(blob: Blob) => {
 
         if(response.status === 200){
 
-            return response?.data?.IpfsHash;
+            const ifpsDetails = {
+
+                ipfsHash: response?.data?.IpfsHash as string,
+                fileName: fileName as string,
+                
+            } 
+            return ifpsDetails;
 
         }else{
 

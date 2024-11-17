@@ -1,10 +1,12 @@
 import axios from "axios";
+import getContract from "../../Utilities/getContract";
+import { EventLog } from "ethers";
 
 export const getTransactionsByUser = async(userAddress: `0x${string}`) => {
 
     try {
         
-        let url: string = "http://localhost:3001//api/getTransactionsByUser";
+        let url: string = "http://localhost:8000/api/getTransactionsByUser";
 
         let params = { 
 
@@ -14,7 +16,7 @@ export const getTransactionsByUser = async(userAddress: `0x${string}`) => {
 
         const resp = await axios.get(url , {params});
         
-        console.log(resp.data);
+        // console.log(resp.data);
 
         return resp.data;
 
@@ -25,59 +27,25 @@ export const getTransactionsByUser = async(userAddress: `0x${string}`) => {
 
 }
 
-export const submitTransaction = async(userAddress: `0x${string}` , filename: string , ipfsHash: string, activityType: string , txId: string , tokenAmount: number , txIndexId: string) => {
+export const readEventSubmitTransaction = async() => {
 
     try {
         
-        const url: string = "http://localhost:3001/api/submitTransaction";
+        const contract = await getContract();
 
-        const data = {
+        const transactions = await contract?.queryFilter("SubmitTransaction");
 
-            userAddr: userAddress,
-            fileName: filename,
-            ipfsPath: ipfsHash,
-            activityType: activityType,
-            txId: txId,
-            tokenAmount: tokenAmount,
-            txIndexId: txIndexId,
+        let txId;
 
-        }
+        transactions?.map((transaction) => {
 
-        const resp = await axios.post(url , data);
+            const transactionDetails = transaction as EventLog;
 
-        console.log(resp.data);
+            txId = transactionDetails?.args[1].toString();
 
-        return resp.data;
+        })
 
-    } catch (error) {
-
-        console.log(error);
-        
-    }
-
-}
-
-export const execTransaction = async(userAddress: `0x${string}`, txIndexId: string , txId: string , status: string) => {
-
-    try {
-
-        const url: string = "http://localhost:3001/api/execTransaction";
-
-        const data = {
-
-            userAddr: userAddress,
-            txIndexId: txIndexId,
-            txId: txId,
-            status: status,
-
-        }
-
-        const resp = await axios.post(url , data);
-
-        console.log(resp.data);
-
-        return resp.data;
-
+        return txId;
 
 
     } catch (error) {

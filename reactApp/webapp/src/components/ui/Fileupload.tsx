@@ -17,8 +17,10 @@ import { useAccount } from "wagmi";
 
 import html2canvas from "html2canvas";
 import { uploadFileToIpfs } from "../../../Utilities/uploadFileToIpfs";
-import { errorNotification, successNotification, uploadDataToSmartContract } from "@/constants/writeFunctions";
+import { errorNotification, submitTransaction, successNotification, uploadDataToSmartContract } from "@/constants/writeFunctions";
 import { ethers } from "ethers";
+
+import { readEventSubmitTransaction } from "@/constants/readFunctions";
 
 import { UseStateManagement } from "../../../StateManagement";
 
@@ -56,12 +58,22 @@ const FileSvgDraw = (): React.JSX.Element => {
 const FileUploaderTest = (): React.JSX.Element => {
   const [files, setFiles] = useState<File[] | null>(null);
 
-  const { selectedItem, value, loading, setLoading } = UseStateManagement();
+  const [filename , setFileName] = useState<string>("");
+
+  const [transactionurl , setTransactionUrl] = useState<string>("");
+
+  const [ipfspath , setIpfsPath] = useState<string>("");
+
+  // const { selectedItem, tokenAmount, loading, setLoading, txIndexId , setTxIndexId , fileName, setFileName , trasanctionUrl , setTransactionUrl , ipfsPath , setIpfsPath } = UseStateManagement();
+  const { selectedItem, tokenAmount, loading, setLoading, txIndexId , setTxIndexId, setTransactionData } = UseStateManagement();
 
   // const [blobData , setBlobData] = useState<Blob>();
 
   const { address } = useAccount();
 
+  let fileName: string;
+  let ipfsPath: string;
+  let transactionUrl: string;
 
 
   const uploadFiles = async () => {
@@ -74,22 +86,35 @@ const FileUploaderTest = (): React.JSX.Element => {
 
       console.log("The generated blob is", blob);
 
-      const ipfsHash = await uploadFileToIpfs(blob!);
+      const ipfsDetails = await uploadFileToIpfs(blob!, address!);
 
-      console.log('ipfs hash', `https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
+      const ipfsHash = ipfsDetails?.ipfsHash;
 
+      // console.log('ipfs hash', `https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
+
+
+      ipfsPath = `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
+      setIpfsPath(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`)
+
+      
+      fileName = ipfsDetails?.fileName!;
+      setFileName(ipfsDetails?.fileName!);
+      // console.log(ipfsDetails?.fileName!);
 
       console.log(String(ipfsHash));
 
-      console.log(value);
+      console.log(tokenAmount);
 
       console.log(selectedItem);
 
 
       // const receipt = await uploadDataToSmartContract(address! , Number(ethers.parseEther("0.0000000002")) , String(ipfsHash) , `${selectedItem}`);
-      const receipt = await uploadDataToSmartContract(address!, Number(value), String(ipfsHash), `${selectedItem}`);
+      const receipt = await uploadDataToSmartContract(address!, Number(tokenAmount), String(ipfsHash), `${selectedItem}`);
 
       console.log("The transaction receipt is ", receipt);
+
+       transactionUrl = `https://hekla.taikoscan.io/tx/${receipt}`;
+      setTransactionUrl(`https://hekla.taikoscan.io/tx/${receipt}`);
 
       setFiles(null);
 
@@ -97,7 +122,13 @@ const FileUploaderTest = (): React.JSX.Element => {
 
       if (receipt!) {
 
-        successNotification("File Uploaded Successfully");
+        const resp = await submitTransaction(address!, fileName, ipfsPath, selectedItem, transactionUrl, tokenAmount, txIndexId );
+
+        console.log("Response getting from submit transaction" , resp);
+
+        setTransactionData(resp);
+
+        successNotification("Transaction Completed Successfully");
 
       } else {
 
@@ -248,9 +279,23 @@ const FileUploaderTest = (): React.JSX.Element => {
   };
 
 
-  // useEffect(() => {
-  //   files && generatePdf(files!);
-  // }, [files]);
+  useEffect(() => {
+
+    const readData = async() => {
+
+      const id = await readEventSubmitTransaction();
+
+      console.log(id);
+
+      setTxIndexId(id);
+
+
+    }
+
+    address && readData()
+
+
+  }, [address])
 
   return (
 
@@ -282,6 +327,7 @@ const FileUploaderTest = (): React.JSX.Element => {
               {files &&
                 files.length > 0 &&
                 files.map((file, i) => (
+
                   <FileUploaderItem key={i} index={i}>
                     <Paperclip
                       height={50}
@@ -290,7 +336,8 @@ const FileUploaderTest = (): React.JSX.Element => {
                     />
                     <span className="text-2xl">{file.name}</span>
                   </FileUploaderItem>
-                ))}
+                  
+                  ))}
             </FileUploaderContent>
           )}
         </FileUploader>
