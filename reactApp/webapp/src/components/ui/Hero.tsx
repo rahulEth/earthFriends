@@ -18,7 +18,6 @@ const Hero = (): React.JSX.Element => {
               Building a Greener Future Through Eco-Friendly Practices like Planting Trees, using eco-friendly products, collecting and dumping garbage responsibliy, Electric Vehicle , running environment campaign and many more....
                 
                 </span>
-
           </div>
 
           <div className='flex items-center justify-center py-10 px-10 md:w-1/3 md:h-1/3'>
@@ -31,8 +30,7 @@ const Hero = (): React.JSX.Element => {
 
               />
 
-          </div>
-         
+          </div>       
 
 
     </section>

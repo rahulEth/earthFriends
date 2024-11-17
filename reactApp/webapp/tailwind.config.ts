@@ -59,7 +59,18 @@ const config: Config = {
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
   			}
-  		}
+  		},
+
+		animation: {
+			wave: 'wave 0.6s ease-in-out forwards',
+		},
+		keyframes: {
+			wave: {
+			  '0%': { transform: 'translateX(-100)' },
+			  '50%': { transform: 'translateX(100px)' },
+			  '100%': { transform: 'translateY(0)' },
+			},
+		},
   	}
   },
   plugins: [require("tailwindcss-animate")],
