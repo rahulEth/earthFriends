@@ -14,7 +14,7 @@ const DropdownInput: React.FC<DropdownProps> = ( {options} ): React.JSX.Element 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
 
-  const {selectedItem , setSelectedItem , setValue} = UseStateManagement();
+  const {selectedItem , setSelectedItem , setTokenAmount} = UseStateManagement();
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -31,31 +31,31 @@ const DropdownInput: React.FC<DropdownProps> = ( {options} ): React.JSX.Element 
 
       switch(selectedItem){
         case "environment-campaign":
-            setValue("5000");
+          setTokenAmount("5000");
           break;
   
         case "garbage-cleaning":
-            setValue("2500");
+          setTokenAmount("2500");
           break;
   
         case "eco-product":
-            setValue("2000");
+          setTokenAmount("2000");
           break;
   
         case "eco-farming":
-            setValue("5000");
+          setTokenAmount("5000");
           break;
   
         case "re-forestration":
-            setValue("1000");
+          setTokenAmount("1000");
           break;
         
         case "eco-transport":
-            setValue("1000");
+          setTokenAmount("1000");
           break;
   
         default:
-            setValue("0");
+          setTokenAmount("0");
           break;
           
   

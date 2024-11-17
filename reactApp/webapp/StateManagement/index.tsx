@@ -2,6 +2,7 @@
 
 import React , {createContext, useContext, useState} from 'react'
 
+import { TransactionData } from '@/interfaces';
 
 const StateManagement = createContext<any>({});
 
@@ -12,13 +13,21 @@ export const StateManagementProvider = ({children}: Readonly<{children: React.Re
 
     const [selectedItem, setSelectedItem] = useState<string>('');
 
-    const [value , setValue] = useState<string>("0");
+    const [tokenAmount , setTokenAmount] = useState<string>("0");
 
     const [loading , setLoading] = useState<boolean>(false);
 
+    const [txIndexId , setTxIndexId] = useState<string>("");
+
+    const [transactionData, setTransactionData] = useState<TransactionData | undefined>();
+
+    const [transactions , setTransactions] = useState<TransactionData[]>([]);
+
+  
+
   return (
 
-    <StateManagement.Provider value={{test , selectedItem , setSelectedItem , value , setValue , loading , setLoading}}>
+    <StateManagement.Provider value={{test , selectedItem , setSelectedItem , tokenAmount , setTokenAmount , loading , setLoading, txIndexId , setTxIndexId, setTransactionData , transactions  , setTransactions}}>
 
             {children}
 
