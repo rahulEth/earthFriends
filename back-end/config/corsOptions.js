@@ -1,6 +1,7 @@
 const allowdedOrigins = [
     "http://127.0.0.1:5173",
     "http://localhost:5173",
+    "http://localhost:3000",
     "chrome-extension://*", // replace star with your extension ID
   ];
   
