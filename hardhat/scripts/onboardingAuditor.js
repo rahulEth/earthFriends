@@ -1,6 +1,7 @@
 require('dotenv').config()
 const { ethers } = require('ethers');
-const  {abi} = require('../artifacts/contracts/EarthAuditor.sol/EarthAuditor.json');
+// const  {abi} = require('../artifacts/contracts/EarthAuditor.sol/EarthAuditor.json');
+const  {abi} = require('../artifacts/contracts/EarthFriends.sol/EarthFriends.json');
 const provider = new ethers.JsonRpcProvider(process.env.TAIKO_HELKA_TESTNET);
 
 // Use a private key to sign transactions (optional, if interacting with state-changing methods)
@@ -11,8 +12,14 @@ console.log("rpviate---- ", privateKey)
 // Contract address and ABI (replace with actual values)
 const contractAddress = process.env.AUDITOR_CONTRACT;
 
+
+const contractToken = process.env.TOKEN_CONTRACT;
+
 // Create the contract instance
-const contract = new ethers.Contract(contractAddress, abi, wallet);
+// const contract = new ethers.Contract(contractAddress, abi, wallet);
+
+const contract_token = new ethers.Contract(contractToken, abi, wallet);
+
 
 
 const onboardAuditor = (auiditor)=>{
@@ -37,3 +44,22 @@ const onboardAuditor = (auiditor)=>{
 //onboardAuditor("0x61A08abc9987B71c05d887F8bC6d7235C52Ee7ba")
 // rahul
 // onboardAuditor("0x290ABcfdbB5046EDeDC589eFef2BB2EfAfc6b6ca")
+
+
+const assignAuditor = (audiContractAddr)=>{
+  return new Promise(async (resolve, reject)=>{
+    try{
+        const tx = await contract_token.assignAuditor(audiContractAddr);
+        await tx.wait();  // Wait for the transaction to be mined
+        console.log(`assignAuditor  Tx Hash: ${tx.hash}`);
+        return resolve(tx.hash);
+
+    }catch(err){
+      console.log("error while sending the transaction-------", err)
+      return reject(err);
+    }
+  }) 
+
+}
+
+// assignAuditor("0xb24b69f1890CD81F0f7A0D0af04Ea4B9cCCf9e8e")  //auditor smart contract address
