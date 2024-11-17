@@ -4,7 +4,7 @@ import React from "react";
 function Statistics() {
   const stats = [
     { label: "Total Users", value: "76", color: "bg-green-400" },
-    { label: "Total Pending Transaction", value: "76", color: "bg-blue-300" },
+    { label: "Total Pending Transaction", value: "42", color: "bg-blue-300" },
     {
       label: "Total Approved Transaction",
       value: "34",
@@ -12,7 +12,7 @@ function Statistics() {
     },
     {
       label: "Total Token Issued",
-      value: "5000 EFRND",
+      value: "800000 EFRND",
       color: "bg-orange-300",
     },
   ];
