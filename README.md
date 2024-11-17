@@ -95,10 +95,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Ta-da You are good to go and explore earthFriends Admin Portal!
 
-
+# Landing Page
 ![top](./docs/user-dashboard.png)
 
 
+# Admin Dashboard
 ![top](./docs/admin-dashboard.png)
 
 
