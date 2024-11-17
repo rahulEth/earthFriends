@@ -48,7 +48,7 @@ const TableComponent = (): React.JSX.Element => {
 
         address && getTransactions();
 
-    }, [transactions])
+    }, [address])
 
     return (
 
