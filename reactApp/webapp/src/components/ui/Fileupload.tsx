@@ -315,11 +315,13 @@ const FileUploaderTest = (): React.JSX.Element => {
           className="relative h-[40rem]  rounded-lg p-2"
         >
           <FileInput className="outline-dashed outline-1 outline-white">
-            <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full ">
+            <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full">
               <FileSvgDraw />
             </div>
           </FileInput>
-
+          <span className='flex items-center justify-center'>
+            Uploard Your Proof Of Activity  
+          </span>
           {files && (
             <FileUploaderContent>
               {files &&
