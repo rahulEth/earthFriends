@@ -1,5 +1,7 @@
 // components/DropdownInput.js
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+import { UseStateManagement } from '../../../StateManagement';
 
 interface DropdownProps{
 
@@ -10,7 +12,9 @@ interface DropdownProps{
 const DropdownInput: React.FC<DropdownProps> = ( {options} ): React.JSX.Element => {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<string>('');
+
+  const {selectedItem , setSelectedItem , setValue} = UseStateManagement();
+  
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -18,8 +22,61 @@ const DropdownInput: React.FC<DropdownProps> = ( {options} ): React.JSX.Element 
 
   const handleSelectItem = (item: string) => {
     setSelectedItem(item);
+
     setIsOpen(false); // Close the dropdown when an item is selected
   };
+
+  const setTokenValue = () => {
+
+    try {
+
+      switch(selectedItem){
+        case "environment-campaign":
+            setValue("5000");
+          break;
+  
+        case "garbage-cleaning":
+            setValue("2500");
+          break;
+  
+        case "eco-product":
+            setValue("2000");
+          break;
+  
+        case "eco-farming":
+            setValue("5000");
+          break;
+  
+        case "re-forestration":
+            setValue("1000");
+          break;
+        
+        case "eco-transport":
+            setValue("1000");
+          break;
+  
+        default:
+            setValue("0");
+          break;
+          
+  
+      }
+
+      // console.log("The set Value is" , value);
+
+    } catch (error) {
+
+      console.log(error);
+      
+    }
+
+  }
+
+  useEffect(() => {
+
+    selectedItem && setTokenValue();
+
+  }, [selectedItem])
 
   return (
     <div className="relative w-72">
@@ -27,7 +84,7 @@ const DropdownInput: React.FC<DropdownProps> = ( {options} ): React.JSX.Element 
         onClick={toggleDropdown}
         className="w-full p-3 border border-gray-300 rounded-md text-left flex items-center justify-between bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
-        {selectedItem || 'Select an option'}
+        {selectedItem || 'Select Activity Type'}
         <span className="ml-2 ">{isOpen ? '▲' : '▼'}</span>
       </button>
       

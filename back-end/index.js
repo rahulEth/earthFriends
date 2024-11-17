@@ -7,12 +7,13 @@ const { connectToDatabase} = require("./db.js");
 const cors = require("cors");
 let db;
 connectToDatabase().then((result)=>{
-   db = result
+  db = result
 })
 // index.js
 
 const express = require("express");
 const app = express();
+app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' })); // Set limit to 50MB
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 const corsOptions = require("./config/corsOptions.js");

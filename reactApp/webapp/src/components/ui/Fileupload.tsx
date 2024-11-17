@@ -17,8 +17,14 @@ import { useAccount } from "wagmi";
 
 import html2canvas from "html2canvas";
 import { uploadFileToIpfs } from "../../../Utilities/uploadFileToIpfs";
-import { errorNotification, successNotification, uploadDataToSmartContract } from "@/constants/writeFunctions";
+import { errorNotification, submitTransaction, successNotification, uploadDataToSmartContract } from "@/constants/writeFunctions";
 import { ethers } from "ethers";
+
+import { readEventSubmitTransaction } from "@/constants/readFunctions";
+
+import { UseStateManagement } from "../../../StateManagement";
+
+import Loader from "../shared/Loader";
 
 const FileSvgDraw = (): React.JSX.Element => {
   return (
@@ -52,49 +58,90 @@ const FileSvgDraw = (): React.JSX.Element => {
 const FileUploaderTest = (): React.JSX.Element => {
   const [files, setFiles] = useState<File[] | null>(null);
 
+  const [filename , setFileName] = useState<string>("");
+
+  const [transactionurl , setTransactionUrl] = useState<string>("");
+
+  const [ipfspath , setIpfsPath] = useState<string>("");
+
+  // const { selectedItem, tokenAmount, loading, setLoading, txIndexId , setTxIndexId , fileName, setFileName , trasanctionUrl , setTransactionUrl , ipfsPath , setIpfsPath } = UseStateManagement();
+  const { selectedItem, tokenAmount, loading, setLoading, txIndexId , setTxIndexId, setTransactionData } = UseStateManagement();
+
   // const [blobData , setBlobData] = useState<Blob>();
 
-  const {address} = useAccount();
+  const { address } = useAccount();
+
+  let fileName: string;
+  let ipfsPath: string;
+  let transactionUrl: string;
 
 
-  const uploadFiles = async() => {
-      const activityType = 'environment-campaign'
-      /*
-      garbage-cleaning
-      eco-product
-      eco-farming
-      re-forestration
-      eco-transport
-      */
+  const uploadFiles = async () => {
+
+    setLoading(true);
+
+    try {
+
       const blob = await generatePdf(files!);
 
-      const ipfsHash = await uploadFileToIpfs(blob!);
+      console.log("The generated blob is", blob);
 
-      console.log('ipfs hash', `https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
+      const ipfsDetails = await uploadFileToIpfs(blob!, address!);
+
+      const ipfsHash = ipfsDetails?.ipfsHash;
+
+      // console.log('ipfs hash', `https://gateway.pinata.cloud/ipfs/${ipfsHash}`);
 
 
-      const token_amount = 5000;
+      ipfsPath = `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
+      setIpfsPath(`https://gateway.pinata.cloud/ipfs/${ipfsHash}`)
 
-      const receipt = await uploadDataToSmartContract(address! , token_amount , String(ipfsHash) , activityType);
       
-      console.log("The transaction receipt is " , receipt);
+      fileName = ipfsDetails?.fileName!;
+      setFileName(ipfsDetails?.fileName!);
+      // console.log(ipfsDetails?.fileName!);
 
-      if(receipt!){
+      console.log(String(ipfsHash));
 
-        successNotification("File have been successfully uploaded");
+      console.log(tokenAmount);
 
-      }else{
+      console.log(selectedItem);
+
+
+      // const receipt = await uploadDataToSmartContract(address! , Number(ethers.parseEther("0.0000000002")) , String(ipfsHash) , `${selectedItem}`);
+      const receipt = await uploadDataToSmartContract(address!, Number(tokenAmount), String(ipfsHash), `${selectedItem}`);
+
+      console.log("The transaction receipt is ", receipt);
+
+       transactionUrl = `https://hekla.taikoscan.io/tx/${receipt}`;
+      setTransactionUrl(`https://hekla.taikoscan.io/tx/${receipt}`);
+
+      setFiles(null);
+
+      setLoading(false);
+
+      if (receipt!) {
+
+        const resp = await submitTransaction(address!, fileName, ipfsPath, selectedItem, transactionUrl, tokenAmount, txIndexId );
+
+        console.log("Response getting from submit transaction" , resp);
+
+        setTransactionData(resp);
+
+        successNotification("Transaction Completed Successfully");
+
+      } else {
 
         errorNotification("Couldnt upload the file");
 
       }
 
-    try {
-      
+
+
     } catch (error) {
 
       console.log(error);
-      
+
     }
 
   }
@@ -232,57 +279,88 @@ const FileUploaderTest = (): React.JSX.Element => {
   };
 
 
-  // useEffect(() => {
-  //   files && generatePdf(files!);
-  // }, [files]);
+  useEffect(() => {
+
+    const readData = async() => {
+
+      const id = await readEventSubmitTransaction();
+
+      console.log(id);
+
+      setTxIndexId(id);
+
+
+    }
+
+    address && readData()
+
+
+  }, [address])
 
   return (
-    <div className="flex items-center justify-center flex-col mb-5 w-auto">
-      <FileUploader
-        value={files}
-        onValueChange={setFiles}
-        dropzoneOptions={dropZoneConfig}
-        className="relative h-[40rem]  rounded-lg p-2"
-      >
-        <FileInput className="outline-dashed outline-1 outline-white">
-          <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full ">
-            <FileSvgDraw />
+
+    <>
+
+    {
+
+      loading && <Loader/>
+
+    }
+
+      <div className="flex items-center justify-center flex-col mb-5 w-auto">
+        <FileUploader
+          value={files}
+          onValueChange={setFiles}
+          dropzoneOptions={dropZoneConfig}
+          className="relative h-[40rem]  rounded-lg p-2"
+        >
+          <FileInput className="outline-dashed outline-1 outline-white">
+            <div className="flex items-center justify-center flex-col pt-3 pb-4 w-full">
+              <FileSvgDraw />
+            </div>
+          </FileInput>
+          <span className='flex items-center justify-center'>
+            Uploard Your Proof Of Activity  
+          </span>
+          {files && (
+            <FileUploaderContent>
+              {files &&
+                files.length > 0 &&
+                files.map((file, i) => (
+
+                  <FileUploaderItem key={i} index={i}>
+                    <Paperclip
+                      height={50}
+                      width={50}
+                      className="h-[5rem] w-[5rem] stroke-current"
+                    />
+                    <span className="text-2xl">{file.name}</span>
+                  </FileUploaderItem>
+                  
+                  ))}
+            </FileUploaderContent>
+          )}
+        </FileUploader>
+
+        {files && files?.length > 0 && (
+          <div className="flex items-center justify-center flex-row flex-wrap gap-5 pb-10 mb-10">
+            <Dropdown />
+
+            <button
+              className="flex items-center justify-center text-white text-xl bg-green-500 border border-white rounded-xl h-[3rem] w-[14rem] cursor-pointer"
+              onClick={uploadFiles}
+              disabled={!selectedItem}
+
+            >
+
+              Upload Files
+            </button>
           </div>
-        </FileInput>
-
-        {files && (
-          <FileUploaderContent>
-            {files &&
-              files.length > 0 &&
-              files.map((file, i) => (
-                <FileUploaderItem key={i} index={i}>
-                  <Paperclip
-                    height={50}
-                    width={50}
-                    className="h-[5rem] w-[5rem] stroke-current"
-                  />
-                  <span className="text-2xl">{file.name}</span>
-                </FileUploaderItem>
-              ))}
-          </FileUploaderContent>
         )}
-      </FileUploader>
+      </div>
+    </>
 
-      {files && files?.length > 0 && (
-        <div className="flex items-center justify-center flex-row flex-wrap gap-5 pb-10 mb-10">
-          <Dropdown />
 
-          <button 
-          className="flex items-center justify-center text-white text-xl bg-green-500 border border-white rounded-xl h-[3rem] w-[14rem] cursor-pointer"
-          onClick={uploadFiles}
-          
-          >
-          
-            Upload Files
-          </button>
-        </div>
-      )}
-    </div>
   );
 };
 
