@@ -13,7 +13,7 @@ const getContract = async () => {
 
     return contract;
   } catch (error) {
-    console.log(error);
+    console.log("contract error", error);
   }
 };
 export default getContract;
