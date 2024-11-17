@@ -19,7 +19,7 @@ If User do any activity like waste managment, planting tree, awareness campaign 
 
 ## Architecture
 
-![top](./docs/earth-friends-architecture.drawio)
+![top](./docs/earth-friends-architecture.drawio.png)
 
 ## Getting Started on local 
 
